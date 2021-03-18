@@ -30,31 +30,31 @@ console.log(selection.value)
 
 //onGuess={judge},子コンポーネント colorを親コンポーネントに渡したい
 
-function Guess({ onGuess }) {
+function Guess({ onGuess, colorful, texts, somecolor, func }) {
   const [val, setVal] = useState(0);
-  const [color, setColor] = useState('red') //selectの結果
-  const [text, setText] = useState('') //色の判定を行ったときの表示されるやつ
+  /*  const [color, setColor] = useState('red') //selectの結果
+   const [text, setText] = useState('') //色の判定を行ったときの表示されるやつ */
   const handleChange = e => setVal(e.target.value)
-  const handleColor = e => setColor(e.target.value)
+  //const handleColor = e => setColor(e.target.value)
   const handleClick = () => {
-    onGuess(val * 1);// ここが何をしているのか
+    onGuess(val * 1);// ここが何をしているのか.予想するのやつ
     console.log(func())
   }
   //console.log(color)
-  const colorrender = () => {
+  /* const colorrender = () => {
     var colren = color;
     return colren;
   }
-
+  
+  var rendercolor = colorrender()
+  console.log(rendercolor);
   //ここらへんで三項演算子の関数を作成し、handleclickに入れておく
   const func = () => {
     const sel = selection.value == rendercolor ? setText('色は合ってます！') : setText('色が違います！')
 
     return sel
   }
-
-  var rendercolor = colorrender()
-  console.log(rendercolor);
+ */
   //colorを変更するとレンダリングが走るようで、関数にしたら解決したのですが、それをif文の条件の中に入れるとレンダリングのループになってしまいます。
   //どう実行すれば思い通りの挙動になるのでしょうか。三項演算子でいけた
   /* if (selection.value == rendercolor) {
@@ -64,10 +64,6 @@ function Guess({ onGuess }) {
   }
  */
 
-  const rep = () => {
-    setText('')
-    setColor('red')
-  }
 
   return (
     <>
@@ -81,13 +77,13 @@ function Guess({ onGuess }) {
       }} */
       />
 
-      <select value={color}
-        onChange={handleColor}>
+      <select value={colorful}
+        onChange={somecolor}>
         <option value="red">赤</option>
         <option value="blue">青</option>
         <option value="green">緑</option>
       </select>
-      <p>色:{color}</p>
+      <p>色:{colorful}</p>
       <input
         type="button"
         value="予想する"
@@ -97,19 +93,38 @@ function Guess({ onGuess }) {
         }/* {replay} */
       />
       <div></div>
-      <p>{text}</p>
+      <p>{texts}</p>
     </>
   )
 }
 // 色はvalueの値で比較する？
-function NumberGuessing(color) {
+//setcolor, settextを親おこぽーねんと二渡してそこで操作する。そうすること絵初期値のusestateがundfinedにならないはず
+function NumberGuessing(colors) {
   const max = 50;
   const initialCount = 5
   const [answer, setAnswer] = useState(random(max)); //乱数生成
   const [count, setCount] = useState(initialCount);//挑戦回数
+  const [color, setColor] = useState('red') //selectの結果
+  const [text, setText] = useState('') //色の判定を行ったときの表示されるやつ
   const [message, setMessage] = useState('');
-  console.log(color)
+  console.log(colors)
 
+  //const handleColor = e => setColor(e.target.value)
+
+  const colorrender = () => {
+    var colren = color;
+    return colren;
+  }
+
+  var rendercolor = colorrender()
+  console.log(rendercolor);
+  //ここらへんで三項演算子の関数を作成し、handleclickに入れておく
+  /* const func = () => {
+    const sel = selection.value == rendercolor ? setText('色は合ってます！') : setText('色が違います！')
+
+    return sel
+  }
+ */
 
   const judge = num => {
     var a = num - answer;
@@ -141,15 +156,14 @@ function NumberGuessing(color) {
 
   }
 
-  /*  const rep = () => {
-     setText('')
-     SetColor('red')
-   } */
+
   const replay = () => {
     setAnswer(random(max));
     setCount(initialCount);
     setMessage('');
-    //rep
+    setText('')
+    setColor('red')
+
   }
 
   //サイトを参考にして書いた部分
@@ -157,7 +171,15 @@ function NumberGuessing(color) {
 
   return (
     <>
-      <Guess onGuess={judge} ref={this.playerRef} />
+      <Guess onGuess={judge} colorful={color}
+        texts={text}
+        somecolor={(e) => setColor(e.target.value)}/* ref={this.playerRef} */
+        func={() => {
+          const sel = selection.value == rendercolor ? setText('色は合ってます！') : setText('色が違います！')
+
+          return sel
+        }}
+      />
 
       <p>{message}</p>
       <p>あと{count}回</p>
