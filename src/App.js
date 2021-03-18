@@ -64,6 +64,11 @@ function Guess({ onGuess }) {
   }
  */
 
+  const rep = () => {
+    setText('')
+    setColor('red')
+  }
+
   return (
     <>
 
@@ -147,13 +152,19 @@ function NumberGuessing(color) {
     //rep
   }
 
+  //サイトを参考にして書いた部分
+  /* playerRef = React.createRef(); */
+
   return (
     <>
-      <Guess onGuess={judge} />
+      <Guess onGuess={judge} ref={this.playerRef} />
 
       <p>{message}</p>
       <p>あと{count}回</p>
-      <button onClick={replay}>はじめから</button>
+      <button onClick={/* () => { */
+        replay
+        /* this.playerRef.current.rep() */
+     /*  } */}>はじめから</button>
     </>
   );
 }
